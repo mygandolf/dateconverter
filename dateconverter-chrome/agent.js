@@ -154,59 +154,127 @@ String.prototype.convertDigits = function (to) {
   return str;
 };
 
-// Regular expression patterns for the date formats
-let patterns = [
-  /\b(\d{4})-(\d{2})-(\d{2})\b/g, // YYYY-MM-DD
-  /\b(\d{2})-(\d{2})-(\d{4})\b/g, // DD-MM-YYYY
-  /\b(\d{4})\/(\d{2})\/(\d{2})\b/g, // YYYY/DD/DD
-  /\b(\d{2})\/(\d{2})\/(\d{4})\b/g, // DD/MM/YYYY
-  /\b(\d{4})-(\d{1})-(\d{2})\b/g, // YYYY-M-DD
-  /\b(\d{2})-(\d{1})-(\d{4})\b/g, // DD-M-YYYY
-  /\b(\d{4})\/(\d{1})\/(\d{2})\b/g, // YYYY/M/DD
-  /\b(\d{2})\/(\d{1})\/(\d{4})\b/g, // DD/M/YYYY
-  /\b(\d{4})-(\d{2})-(\d{1})\b/g, // YYYY-MM-D
-  /\b(\d{1})-(\d{2})-(\d{4})\b/g, // D-MM-YYYY
-  /\b(\d{4})\/(\d{2})\/(\d{1})\b/g, // YYYY/MM/D
-  /\b(\d{1})\/(\d{2})\/(\d{4})\b/g, // D/MM/YYYY
-  /\b(\d{4})-(\d{1})-(\d{1})\b/g, // YYYY-M-D
-  /\b(\d{1})-(\d{1})-(\d{4})\b/g, // D-M-YYYY
-  /\b(\d{4})\/(\d{1})\/(\d{1})\b/g, // YYYY/M/D
-  /\b(\d{1})\/(\d{1})\/(\d{4})\b/g, // D/M/YYYY
-];
+console.log("agent loaded");
+document.addEventListener("DOMContentLoaded", function () {
+  let pageHTML = document.documentElement.innerHTML;
+  localStorage.setItem("storedHTML", pageHTML);
+  console.log("pageHTML : ", pageHTML);
+});
 
-// Get all text content on the page
-let pageText = document.body.innerText;
 
-// Find and process all calendar dates
-for (let pattern of patterns) {
-  let elements = document.getElementsByTagName("*");
-  for (let i = 0; i < elements.length; i++) {
-    let element = elements[i];
-    for (let j = 0; j < element.childNodes.length; j++) {
-      let node = element.childNodes[j];
-      if (node.nodeType === 3 && node.parentNode.nodeName !== "INPUT" && node.parentNode.nodeName !== "TEXTAREA") {
-        let text = node.nodeValue;
-        let matches = text.match(pattern);
-        if (matches !== null) {
-          let matches = text.matchAll(pattern);
-          for (let match of matches) {
-            month = match[2];
-            if (match[1].length == 4) {
-              year = match[1];
-              day = match[3];
-            }
-            if (match[3].length == 4) {
-              year = match[3];
-              day = match[1];
-            }
+
+let chengeDateCounter = 0
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("Received message.action from popup:", message.action);
+  if (message.action === "auto"){
+    dateChanger();
+  }else if (message.action === "toshamsi" && chengeDateCounter === 0){
+    dateChanger(message.numberFa);
+    chengeDateCounter++;
+  }else if (message.action === "restore" && chengeDateCounter === 1) {
+    document.documentElement.innerHTML = localStorage.getItem("storedHTML");
+    chengeDateCounter--;
+  }
+    // Process the received data here
+
+    // Send a response back if needed
+    // sendResponse("Data received successfully");
+});
+
+
+
+
+
+
+
+
+function dateChanger(numberFa) {
+  // Regular expression patterns for the date formats
+  let patterns = [
+    /\b(\d{4})-(\d{2})-(\d{2})\b/g, // YYYY-MM-DD
+    /\b(\d{2})-(\d{2})-(\d{4})\b/g, // DD-MM-YYYY
+    /\b(\d{4})\/(\d{2})\/(\d{2})\b/g, // YYYY/DD/DD
+    /\b(\d{2})\/(\d{2})\/(\d{4})\b/g, // DD/MM/YYYY
+    /\b(\d{4})-(\d{1})-(\d{2})\b/g, // YYYY-M-DD
+    /\b(\d{2})-(\d{1})-(\d{4})\b/g, // DD-M-YYYY
+    /\b(\d{4})\/(\d{1})\/(\d{2})\b/g, // YYYY/M/DD
+    /\b(\d{2})\/(\d{1})\/(\d{4})\b/g, // DD/M/YYYY
+    /\b(\d{4})-(\d{2})-(\d{1})\b/g, // YYYY-MM-D
+    /\b(\d{1})-(\d{2})-(\d{4})\b/g, // D-MM-YYYY
+    /\b(\d{4})\/(\d{2})\/(\d{1})\b/g, // YYYY/MM/D
+    /\b(\d{1})\/(\d{2})\/(\d{4})\b/g, // D/MM/YYYY
+    /\b(\d{4})-(\d{1})-(\d{1})\b/g, // YYYY-M-D
+    /\b(\d{1})-(\d{1})-(\d{4})\b/g, // D-M-YYYY
+    /\b(\d{4})\/(\d{1})\/(\d{1})\b/g, // YYYY/M/D
+    /\b(\d{1})\/(\d{1})\/(\d{4})\b/g, // D/M/YYYY
+  ];
+
+
+  const elements = document.getElementsByTagName("*");
+  for (const pattern of patterns) {
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      for (let j = 0; j < element.childNodes.length; j++) {
+        const node = element.childNodes[j];
+        if (
+          node.nodeType === Node.TEXT_NODE &&
+          node.parentNode.nodeName !== "INPUT" &&
+          node.parentNode.nodeName !== "TEXTAREA"
+        ) {
+          let text = node.nodeValue;
+          const matches = text.matchAll(pattern);
+          for (const match of matches) {
+            let year = match[1].length == 4 ? match[1] : match[3];
+            let day = match[1].length == 4 ? match[3] : match[1];
+            let month = match[2];
             let convertedDate = farvardin.gregorianToSolar(parseInt(year), parseInt(month), parseInt(day), "string");
-            text = text.replace(match[0], convertedDate.toString().convertDigits("fa"));
+            if (numberFa === true) {
+              text = text.replace(match[0], convertedDate.toString().convertDigits("fa"));
+            } else {
+              text = text.replace(match[0], convertedDate);
+            }
+            node.nodeValue = text;
           }
-          node.nodeValue = text;
         }
       }
     }
   }
+  // Find and process all calendar dates
+  // for (let pattern of patterns) {
+  //   let elements = document.getElementsByTagName("*");
+  //   for (let i = 0; i < elements.length; i++) {
+  //     let element = elements[i];
+  //     for (let j = 0; j < element.childNodes.length; j++) {
+  //       let node = element.childNodes[j];
+  //       if (node.nodeType === 3 && node.parentNode.nodeName !== "INPUT" && node.parentNode.nodeName !== "TEXTAREA") {
+  //         let text = node.nodeValue;
+  //         let matches = text.match(pattern);
+  //         if (matches !== null) {
+  //           let matches = text.matchAll(pattern);
+  //           for (let match of matches) {
+  //             month = match[2];
+  //             if (match[1].length == 4) {
+  //               year = match[1];
+  //               day = match[3];
+  //             }
+  //             if (match[3].length == 4) {
+  //               year = match[3];
+  //               day = match[1];
+  //             }
+  //             let convertedDate = farvardin.gregorianToSolar(parseInt(year), parseInt(month), parseInt(day), "string");
+  //             if(numberFa === true){
+  //               text = text.replace(match[0], convertedDate.toString().convertDigits("fa"));
+  //             }else{
+  //               text = text.replace(match[0], convertedDate);
+  //             }
+  //           }
+  //           node.nodeValue = text;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
+
 
 
