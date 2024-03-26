@@ -1,0 +1,54 @@
+*{
+    font-family: "Yekan-Bakh", sans-serif;
+    font-weight: 500;
+}
+.main-bg {
+    width: 200px;
+    height: 100px;
+    background-color: cadetblue;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+}
+.card{
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    border: 0;
+}
+.form-switch .form-check-input{
+    transform: scale(1.5);
+}
+.text-muted{
+    color: rgba(0,0,0,0.2) !important;
+    font-size: 10px;
+}
+.rotating {
+    animation: rotating 0.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+}
+@keyframes rotating {
+    0% {
+    transform: rotate(0deg);
+    }
+    100% {
+    transform: rotate(180deg);
+    }
+}
+.form-switch{
+    width: 100%;
+    display: flex;
+    justify-content:space-evenly;
+    margin-top: 16px;
+}
+.card-body{
+    display: flex;
+    flex-direction: column;
+}
+.card-body .d-flex{
+    justify-content: center;
+}
+.form-check-label{
+    text-align: right;
+}
