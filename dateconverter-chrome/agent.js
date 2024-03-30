@@ -155,10 +155,11 @@ String.prototype.convertDigits = function (to) {
 };
 
 console.log("agent loaded");
+
 document.addEventListener("DOMContentLoaded", function () {
   let pageHTML = document.documentElement.innerHTML;
   localStorage.setItem("storedHTML", pageHTML);
-  console.log("pageHTML : ", pageHTML);
+  // console.log("pageHTML : ", pageHTML);
 });
 
 
@@ -172,7 +173,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     dateChanger(message.numberFa);
     chengeDateCounter++;
   }else if (message.action === "restore" && chengeDateCounter === 1) {
-    document.documentElement.innerHTML = localStorage.getItem("storedHTML");
+    // document.documentElement.innerHTML = localStorage.getItem("storedHTML");
+    window.location.reload();
     chengeDateCounter--;
   }
     // Process the received data here
