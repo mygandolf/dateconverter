@@ -166,17 +166,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let chengeDateCounter = 0
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("Received message.action from popup:", message.action);
-  if (message.action === "auto"){
-    dateChanger();
-  }else if (message.action === "toshamsi" && chengeDateCounter === 0){
+  console.log("Received message.auto from popup:", message.auto);
+  if (message.auto === "true"){
+    // dateChanger();
+    // chengeDateCounter++;
+
+  }else if (message.auto === "false") {
+
+  } else if (message.action === "toshamsi" && chengeDateCounter === 0) {
     dateChanger(message.numberFa);
     chengeDateCounter++;
-  }else if (message.action === "restore" && chengeDateCounter === 1) {
+  } else if (message.action === "restore" && chengeDateCounter === 1) {
     // document.documentElement.innerHTML = localStorage.getItem("storedHTML");
     window.location.reload();
     chengeDateCounter--;
   }
+
+
+
+
     // Process the received data here
 
     // Send a response back if needed

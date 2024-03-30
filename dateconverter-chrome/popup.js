@@ -2,10 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var toshamsi = document.getElementById("toshamsi");
   var refresh = document.getElementById("refresh");
   const persianNum = document.getElementById("persian-num");
-
-  // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  //   chrome.tabs.executeScript(tabs[0].id, { file: "agent.js" });
-  // });
+  const autoConvert = document.getElementById("auto-convert");
+  
 
   toshamsi.addEventListener("click", function () {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -25,39 +23,32 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Check the switch state
-  // toshamsi.addEventListener("click", function () {
-  //   if (persianNum.checked) {
-  //     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  //       chrome.tabs.executeScript(tabs[0].id, { file: "toshamsi-fa.js" });
-  //     });
-  //   } else {
-  //     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  //       chrome.tabs.executeScript(tabs[0].id, { file: "toshamsi-en.js" });
-  //     });
-  //   }
-  // });
+  autoConvert.addEventListener("click", function () {
+    if (autoConvert.checked) {
+      localStorage.setItem("autoConvert", "true");
+    } else {
+      localStorage.setItem("autoConvert", "false");
+    }
+  });
 
-  // refresh.addEventListener("click", function () {
-  //   const element = document.getElementById("refresh-icon");
-  //   element.classList.add("rotating");
-  //   setTimeout(function () {
-  //     element.classList.remove("rotating");
-  //   }, 500);
-  //   chrome.tabs.reload();
-  // });
+  persianNum.addEventListener("click", function () {
+    if (persianNum.checked) {
+      localStorage.setItem("persianNum", "true");
+    } else {
+      localStorage.setItem("persianNum", "false");
+    }
+  });
 
-  // // Get the current active tab
-  // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  //   const activeTab = tabs[0];
-  //   console.log("activeTab : ", activeTab);
+  if (localStorage.getItem("autoConvert") === "true") {
+    autoConvert.checked = true;
+  } else {
+    autoConvert.checked = false;
+  }
 
-  //   // Send data to the content script
-  //   // (async () => {
-  //   //   const response = await chrome.tabs.sendMessage(activeTab.id, { data: "Hello from popup" });
-  //   //   // do something with response here, not outside the function
-  //   //   console.log(response);
-  //   // })();
-  //   chrome.tabs.sendMessage(activeTab.id, { data: "Hello from popup" });
-  // });
+  if (localStorage.getItem("persianNum") === "true") {
+    persianNum.checked = true;
+  } else {
+    persianNum.checked = false;
+  }
+
 });
