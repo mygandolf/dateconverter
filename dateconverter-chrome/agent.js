@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let chengeDateCounter = 0
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("Received message.auto from popup:", message.auto);
+  // console.log("Received message.auto from popup:", message.auto);
   if (message.auto === "true"){
     // dateChanger();
     // chengeDateCounter++;
@@ -249,6 +249,11 @@ function dateChanger(numberFa) {
       }
     }
   }
+}
+
+
+
+  
   // Find and process all calendar dates
   // for (let pattern of patterns) {
   //   let elements = document.getElementsByTagName("*");
@@ -284,7 +289,91 @@ function dateChanger(numberFa) {
   //     }
   //   }
   // }
+
+
+
+
+
+
+
+
+
+function numberChanger(){
+  function convertNumbersToFarsi(str) {
+    var regex = /\d+(?:\.\d+)?/g;
+    var matches = str.match(regex);
+
+    if (matches) {
+      matches.forEach(function (number) {
+        var persianNumber = convertToPersianNumber(number);
+        str = str.replace(number, persianNumber);
+      });
+    }
+
+    return str;
+  }
+
+  function convertToPersianNumber(number) {
+    var persianDigits = {
+      0: "۰",
+      1: "۱",
+      2: "۲",
+      3: "۳",
+      4: "۴",
+      5: "۵",
+      6: "۶",
+      7: "۷",
+      8: "۸",
+      9: "۹",
+      ".": "٫",
+    };
+
+    var persianNumber = "";
+    for (var i = 0; i < number.length; i++) {
+      var char = number.charAt(i);
+      persianNumber += persianDigits[char] || char;
+    }
+    return persianNumber;
+  }
+
+  function checkForEnglishLetter(str) {
+    var regex = /[a-zA-Z]/;
+    return regex.test(str) ? 1 : 0;
+  }
+
+  function replaceString(sourceStr, targetStr, replacementStr) {
+    return sourceStr.replace(targetStr, replacementStr);
+  }
+
+  let elements = document.getElementsByTagName("*");
+  for (let i = 0; i < elements.length; i++) {
+    let element = elements[i];
+    for (let j = 0; j < element.childNodes.length; j++) {
+      let node = element.childNodes[j];
+      if (node.nodeType === 3 && node.parentNode.nodeName !== "INPUT" && node.parentNode.nodeName !== "TEXTAREA") {
+        let text = node.nodeValue;
+        var regex = /(.{0,8})(\d+(?:\.\d+)?)(.{0,8})/g;
+        var matches = text.matchAll(regex);
+        // console.log("text : ", text);
+        for (var match of matches) {
+          var numberWithContext = match[1] + match[2] + match[3];
+          // console.log("numberWithContext : ", numberWithContext + " >> " + checkForEnglishLetter(numberWithContext));
+          if (checkForEnglishLetter(numberWithContext) === 0) {
+            // console.log("changed : ", convertNumbersToFarsi(numberWithContext));
+            text = replaceString(text, numberWithContext, convertNumbersToFarsi(numberWithContext));
+            // console.log("text updated : ", text);
+            node.nodeValue = text;
+          }
+        }
+      }
+    }
+  }
 }
 
 
 
+
+
+
+    
+  

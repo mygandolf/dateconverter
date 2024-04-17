@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Dates To Shamsi",
-  "version": "0.6",
+  "name": "Dame",
+  "version": "4.0",
   "permissions": ["activeTab", "tabs"],
   "background": {
     "scripts": ["background.js"],
